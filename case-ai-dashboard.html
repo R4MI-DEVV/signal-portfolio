@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Case 02 — AI Decision Dashboard · Signal Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0B0F14; --surface: #111823; --surface2: #161E2B;
+  --accent: #4DE3FF; --accent2: #5B8CFF; --amber: #FFCC66;
+  --red: #FF6B6B; --green: #4DFFB4;
+  --text-primary: #E6EDF3; --text-secondary: #A0A8B3; --text-muted: #5A6475;
+  --border: rgba(255,255,255,0.07); --border-hover: rgba(77,227,255,0.2);
+  --radius: 8px; --radius-lg: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+h1,h2,h3,h4,h5 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.2; color: var(--text-primary); }
+a { color: inherit; text-decoration: none; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 3rem;
+  background: rgba(11,15,20,0.85); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.08em; text-transform: uppercase; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-size: 13px; color: var(--text-secondary); letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+
+.case-hero {
+  padding: 10rem 3rem 5rem; max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end;
+}
+.case-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+.case-id { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent2); }
+.case-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); }
+.case-type { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.concept-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 4px 12px; border-radius: 20px; background: rgba(255,204,102,0.08); border: 1px solid rgba(255,204,102,0.2); color: var(--amber); letter-spacing: 0.04em; margin-top: 1.25rem; }
+.case-hero h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 1rem; line-height: 1.05; }
+.case-hero .subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 420px; }
+.case-meta-block { display: flex; flex-direction: column; gap: 1.5rem; padding: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.meta-item label { display: block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.meta-item p { font-size: 0.875rem; color: var(--text-secondary); }
+.meta-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); }
+
+.divider { max-width: 1100px; margin: 0 auto; height: 1px; background: var(--border); }
+
+.case-body { max-width: 1100px; margin: 0 auto; padding: 0 3rem 6rem; display: grid; grid-template-columns: 220px 1fr; gap: 5rem; align-items: start; }
+.case-nav-sidebar { position: sticky; top: 6rem; }
+.case-nav-sidebar ul { list-style: none; border-left: 1px solid var(--border); }
+.case-nav-sidebar li a { display: block; padding: 0.5rem 1.25rem; font-size: 13px; color: var(--text-muted); border-left: 1px solid transparent; margin-left: -1px; transition: color 0.2s, border-color 0.2s; }
+.case-nav-sidebar li a:hover { color: var(--text-secondary); }
+.case-nav-sidebar li a.active { color: var(--accent); border-left-color: var(--accent); }
+
+.content-section { margin-bottom: 4rem; scroll-margin-top: 6rem; }
+.section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 0.75rem; }
+.content-section h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+.content-section p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.85; margin-bottom: 1rem; }
+.content-section p strong { color: var(--text-primary); font-weight: 500; }
+
+.insight { background: rgba(255,204,102,0.05); border: 1px solid rgba(255,204,102,0.15); border-left: 2px solid var(--amber); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+.insight-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); opacity: 0.7; margin-bottom: 0.5rem; }
+.insight p { color: rgba(255,220,120,0.85) !important; font-size: 0.925rem !important; margin: 0 !important; font-style: italic; }
+
+.process-steps { display: flex; flex-direction: column; gap: 1px; margin-top: 1.5rem; }
+.process-step { display: grid; grid-template-columns: 48px 1fr; gap: 1.5rem; align-items: start; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1px; }
+.step-num { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); letter-spacing: 0.08em; padding-top: 3px; }
+.step-content h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+.step-content p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+.feature-list { list-style: none; margin-top: 1.25rem; display: flex; flex-direction: column; gap: 10px; }
+.feature-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+.feature-list li::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); margin-top: 8px; flex-shrink: 0; opacity: 0.7; }
+
+/* ===================== FINTECH DASHBOARD MOCKUP ===================== */
+.dashboard-wrap { margin: 2rem 0; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); background: var(--surface); }
+
+/* App chrome */
+.dash-chrome { background: #0D1117; border-bottom: 1px solid var(--border); padding: 0.6rem 1rem; display: flex; align-items: center; justify-content: space-between; }
+.dash-chrome-left { display: flex; align-items: center; gap: 6px; }
+.dc { width: 8px; height: 8px; border-radius: 50%; }
+.dc-r { background: #FF5F57; }
+.dc-y { background: #FEBC2E; }
+.dc-g { background: #28C840; }
+.dash-chrome-title { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; margin-left: 8px; }
+.dash-chrome-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+/* Sidebar nav */
+.dash-layout { display: grid; grid-template-columns: 48px 1fr; min-height: 520px; }
+.dash-sidebar { background: #0D1117; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 1rem 0; gap: 6px; }
+.dash-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
+.dash-icon svg { width: 16px; height: 16px; opacity: 0.4; }
+.dash-icon.active { background: rgba(91,140,255,0.15); }
+.dash-icon.active svg { opacity: 1; }
+
+/* Main content */
+.dash-main { display: flex; flex-direction: column; overflow: hidden; }
+
+/* Top bar */
+.dash-topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+.dash-topbar-title { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; }
+.dash-topbar-right { display: flex; align-items: center; gap: 10px; }
+.tb-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.04em; }
+.tb-badge.alert { background: rgba(255,107,107,0.12); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+.tb-badge.info { background: rgba(91,140,255,0.1); color: var(--accent2); border: 1px solid rgba(91,140,255,0.2); }
+
+/* KPI row */
+.dash-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+.kpi { background: var(--surface); padding: 0.9rem 1rem; }
+.kpi-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.kpi-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; }
+.kpi-change { font-size: 10px; margin-top: 2px; }
+.up { color: var(--green); }
+.down { color: var(--red); }
+.neutral { color: var(--text-muted); }
+
+/* Content grid */
+.dash-content { display: grid; grid-template-columns: 1fr 280px; gap: 1px; background: var(--border); flex: 1; }
+
+/* Transaction review panel */
+.panel { background: var(--surface2); padding: 1rem 1.1rem; }
+.panel-header { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; }
+.panel-header span { color: var(--accent2); cursor: pointer; font-size: 10px; text-transform: none; letter-spacing: 0; }
+
+/* Transaction rows */
+.tx-row { display: grid; grid-template-columns: 28px 1fr auto auto; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.tx-row:last-child { border-bottom: none; }
+.tx-icon { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+.tx-icon.flag { background: rgba(255,107,107,0.12); }
+.tx-icon.ok { background: rgba(77,255,180,0.1); }
+.tx-icon.warn { background: rgba(255,204,102,0.1); }
+.tx-info { }
+.tx-name { font-size: 11px; font-weight: 500; color: var(--text-primary); }
+.tx-sub { font-size: 10px; color: var(--text-muted); }
+.tx-amount { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; text-align: right; white-space: nowrap; }
+.tx-amount.neg { color: var(--text-primary); }
+.risk-pill { font-size: 9px; padding: 2px 6px; border-radius: 8px; white-space: nowrap; text-align: center; }
+.risk-high { background: rgba(255,107,107,0.12); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+.risk-med { background: rgba(255,204,102,0.1); color: var(--amber); border: 1px solid rgba(255,204,102,0.2); }
+.risk-low { background: rgba(77,255,180,0.08); color: var(--green); border: 1px solid rgba(77,255,180,0.15); }
+
+/* Alert detail panel */
+.alert-panel { background: var(--surface); border-left: none; display: flex; flex-direction: column; gap: 10px; }
+.alert-header { background: rgba(255,107,107,0.07); border-bottom: 1px solid rgba(255,107,107,0.15); padding: 10px 14px; }
+.alert-title { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 600; color: var(--red); display: flex; align-items: center; gap: 6px; }
+.alert-title::before { content: '⚠'; font-size: 11px; }
+.alert-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.alert-body { padding: 0 14px 10px; display: flex; flex-direction: column; gap: 8px; }
+
+.score-row { display: flex; align-items: center; justify-content: space-between; }
+.score-label { font-size: 11px; color: var(--text-secondary); }
+.score-right { display: flex; align-items: center; gap: 8px; }
+.score-bar-wrap { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 2px; }
+.fill-red { background: var(--red); }
+.fill-amber { background: var(--amber); }
+.fill-blue { background: var(--accent2); }
+.score-val { font-size: 11px; font-weight: 600; font-family: 'Space Grotesk', sans-serif; min-width: 28px; text-align: right; }
+
+.signal-list { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+.signal-item { font-size: 10px; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 6px; line-height: 1.5; }
+.signal-item.bad::before { content: '✕'; color: var(--red); font-size: 9px; margin-top: 2px; flex-shrink: 0; }
+.signal-item.warn::before { content: '!'; color: var(--amber); font-size: 9px; margin-top: 2px; flex-shrink: 0; font-weight: 700; }
+.signal-item.good::before { content: '✓'; color: var(--green); font-size: 9px; margin-top: 2px; flex-shrink: 0; }
+
+.action-row { display: flex; gap: 6px; padding: 0 14px 12px; }
+.action-btn { flex: 1; padding: 6px; font-size: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; letter-spacing: 0.04em; }
+.action-btn.block { background: rgba(255,107,107,0.15); color: var(--red); border: 1px solid rgba(255,107,107,0.25); }
+.action-btn.review { background: rgba(91,140,255,0.12); color: var(--accent2); border: 1px solid rgba(91,140,255,0.2); }
+
+/* Mini chart */
+.mini-chart { padding: 10px 14px; border-top: 1px solid var(--border); }
+.mini-chart-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+.chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 36px; }
+.bar { flex: 1; border-radius: 2px 2px 0 0; opacity: 0.7; }
+
+/* ===================== END DASHBOARD ===================== */
+
+.reflection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem; }
+.reflection-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+.reflection-card label { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+.reflection-card p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+.case-pagination { max-width: 1100px; margin: 0 auto; padding: 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); }
+.pagination-link { display: flex; flex-direction: column; gap: 4px; }
+.pagination-link .direction { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.pagination-link .title { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text-primary); transition: color 0.2s; }
+.pagination-link:hover .title { color: var(--accent); }
+.pagination-link.next { text-align: right; }
+
+footer { border-top: 1px solid var(--border); padding: 2rem 3rem; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+footer p { font-size: 12px; color: var(--text-muted); }
+
+.fade-up { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.fade-up.visible { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  .case-hero { grid-template-columns: 1fr; gap: 2rem; padding: 8rem 1.5rem 3rem; }
+  .case-body { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem 4rem; }
+  .case-nav-sidebar { display: none; }
+  .dash-layout { grid-template-columns: 1fr; }
+  .dash-sidebar { display: none; }
+  .dash-content { grid-template-columns: 1fr; }
+  .dash-kpis { grid-template-columns: 1fr 1fr; }
+  .reflection-grid { grid-template-columns: 1fr; }
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span>Signal</span>&nbsp;Archive</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="index.html#case-files" class="active">Case Files</a></li>
+    <li><a href="origin.html">Background</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="case-hero">
+  <div>
+    <div class="case-eyebrow">
+      <span class="case-id">Case 02</span>
+      <span class="case-dot"></span>
+      <span class="case-type">Dashboard · Fintech · Concept</span>
+    </div>
+    <h1>AI Decision Dashboard</h1>
+    <p class="subtitle">A self-initiated concept exploring how fintech platforms can make AI-driven fraud signals legible to human analysts.</p>
+    <div class="concept-badge">Concept project</div>
+  </div>
+  <div class="case-meta-block fade-up">
+    <div class="meta-item">
+      <label>Core challenge</label>
+      <p>Helping fraud analysts act on AI signals quickly and confidently, without misreading confidence as certainty.</p>
+    </div>
+    <div class="meta-item">
+      <label>Context</label>
+      <p>Self-initiated concept project. Designed in response to a fintech job brief.</p>
+    </div>
+    <div class="meta-item">
+      <label>Tags</label>
+      <div class="meta-tags">
+        <span class="tag">Data Visualisation</span>
+        <span class="tag">Explainable AI</span>
+        <span class="tag">Fintech</span>
+        <span class="tag">Dashboard</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="case-body">
+  <nav class="case-nav-sidebar" aria-label="Page sections">
+    <ul>
+      <li><a href="#background" class="active">Background</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#goals">Design Goals</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#reflection">Reflection</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <div class="content-section fade-up" id="background">
+      <div class="section-label">Background</div>
+      <h2>The problem with AI in fintech</h2>
+      <p>Fraud detection in financial services increasingly relies on machine learning models that flag suspicious transactions in real time. These systems can process thousands of signals simultaneously, far beyond what a human analyst could manage manually.</p>
+      <p>But the people working alongside these systems face a persistent problem: the AI flags a transaction as high risk, but provides no explanation of why. Analysts are left choosing between two bad options. They either trust the model blindly, or they ignore it and rely entirely on their own judgement. Both approaches undermine the value of the system.</p>
+      <p>This project is a self-initiated concept exploring how a fraud analyst's dashboard could be redesigned to close that gap, making AI signals interpretable, actionable, and trustworthy.</p>
+    </div>
+
+    <div class="content-section fade-up" id="research">
+      <div class="section-label">Research</div>
+      <h2>Understanding the analyst's workflow</h2>
+      <p>Secondary research into fraud analyst workflows, combined with public case studies from fintech companies, revealed a consistent pattern. Analysts who used AI-assisted tools reported two dominant frustrations: alert fatigue from too many low-quality flags, and a lack of explainability that made it hard to justify decisions to compliance teams.</p>
+      <p>A review of existing fraud dashboards found that most prioritised volume metrics over decision support. They were designed to report on what the AI had done, not to help the analyst decide what to do next.</p>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">R.01</span>
+          <div class="step-content">
+            <h4>Workflow research</h4>
+            <p>Mapped a typical fraud analyst's daily workflow using public documentation, job descriptions, and fintech product teardowns to understand the decision sequence from alert to action.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">R.02</span>
+          <div class="step-content">
+            <h4>Dashboard audit</h4>
+            <p>Reviewed publicly available screenshots and demos of fraud platforms including Feedzai, Sardine, and Stripe Radar. Identified where explainability was absent and where cognitive load was highest.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">R.03</span>
+          <div class="step-content">
+            <h4>Signal prioritisation</h4>
+            <p>Researched the most common signals used in transaction fraud detection to understand what information analysts actually need to evaluate a flagged transaction.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="findings">
+      <div class="section-label">Findings</div>
+      <h2>What the research revealed</h2>
+
+      <ul class="feature-list">
+        <li>Analysts needed to understand the risk score, not just see it. A number without reasoning created more hesitation, not less.</li>
+        <li>Speed and accuracy were in tension. Dashboards that showed everything slowed analysts down. The design needed to support fast scanning with deeper detail available on demand.</li>
+        <li>The action moment was underdesigned. Most dashboards showed risk but made the "block" or "review" action feel disconnected from the reasoning that preceded it.</li>
+      </ul>
+
+      <div class="insight">
+        <div class="insight-label">Key insight</div>
+        <p>Analysts didn't need the AI to make decisions for them. They needed to understand the AI's reasoning well enough to make a confident, defensible decision themselves. The dashboard's job was to close that gap.</p>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="goals">
+      <div class="section-label">Design Goals</div>
+      <h2>What the dashboard needed to do</h2>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">G.01</span>
+          <div class="step-content">
+            <h4>Make risk scores interpretable, not just visible</h4>
+            <p>A score of 87 means nothing without context. The design needed to show what signals drove it and how they combined.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.02</span>
+          <div class="step-content">
+            <h4>Support fast triage without sacrificing depth</h4>
+            <p>Analysts reviewing dozens of alerts needed to scan quickly. Detail should be available immediately when they need to go deeper, without cluttering the default view.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.03</span>
+          <div class="step-content">
+            <h4>Connect reasoning to action</h4>
+            <p>The "block" and "review" options should sit directly alongside the evidence that justifies them. The decision and the reasoning needed to live in the same view.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.04</span>
+          <div class="step-content">
+            <h4>Reduce alert fatigue through better prioritisation</h4>
+            <p>Surface the highest-risk flags clearly. Don't treat every alert with equal visual weight when the stakes are clearly different.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="process">
+      <div class="section-label">Process</div>
+      <h2>Structuring the information</h2>
+      <p>The core design challenge was information hierarchy. Three structural approaches were explored in wireframes. The first showed all transaction data in a flat table, which made scanning fast but provided no explanation of risk. The second used a master/detail pattern with a fixed side panel, which was clearer but required too many clicks to get from alert to action. The third combined both: a scannable transaction list on the left with a persistent, contextual alert panel on the right that updated based on the selected row.</p>
+      <p>This third approach became the direction. It allowed analysts to triage quickly while keeping the reasoning always in view for the selected transaction.</p>
+    </div>
+
+    <div class="content-section fade-up" id="solution">
+      <div class="section-label">Solution</div>
+      <h2>The dashboard</h2>
+      <p>The final design centres on a single analyst view combining a real-time transaction list, KPI strip, and a persistent alert detail panel. Risk scores are broken down into contributing signal weights. The action buttons sit directly below the evidence that justifies them.</p>
+
+      <!-- FINTECH DASHBOARD MOCKUP -->
+      <div class="dashboard-wrap">
+        <!-- Chrome bar -->
+        <div class="dash-chrome">
+          <div class="dash-chrome-left">
+            <div class="dc dc-r"></div><div class="dc dc-y"></div><div class="dc dc-g"></div>
+            <span class="dash-chrome-title">ClearSignal — Fraud Intelligence</span>
+          </div>
+          <div class="dash-chrome-right">
+            <div class="live-dot"></div> Live
+          </div>
+        </div>
+
+        <div class="dash-layout">
+          <!-- Icon sidebar -->
+          <div class="dash-sidebar">
+            <div class="dash-icon active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </div>
+            <div class="dash-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="dash-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div class="dash-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+            </div>
+          </div>
+
+          <!-- Main area -->
+          <div class="dash-main">
+            <!-- Top bar -->
+            <div class="dash-topbar">
+              <span class="dash-topbar-title">Transaction Review</span>
+              <div class="dash-topbar-right">
+                <span class="tb-badge alert">3 High Risk</span>
+                <span class="tb-badge info">Updated 12s ago</span>
+              </div>
+            </div>
+
+            <!-- KPIs -->
+            <div class="dash-kpis">
+              <div class="kpi">
+                <div class="kpi-label">Alerts today</div>
+                <div class="kpi-value" style="color:var(--text-primary)">142</div>
+                <div class="kpi-change up">+18 vs yesterday</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">High risk</div>
+                <div class="kpi-value" style="color:var(--red)">3</div>
+                <div class="kpi-change neutral">Pending review</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Auto-blocked</div>
+                <div class="kpi-value" style="color:var(--amber)">27</div>
+                <div class="kpi-change neutral">Model confidence &gt;95%</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">False positive rate</div>
+                <div class="kpi-value" style="color:var(--green)">2.1%</div>
+                <div class="kpi-change down">7d avg: 2.4%</div>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="dash-content">
+              <!-- Transaction list -->
+              <div class="panel">
+                <div class="panel-header">Recent flags <span>View all</span></div>
+
+                <div class="tx-row">
+                  <div class="tx-icon flag">⚑</div>
+                  <div class="tx-info">
+                    <div class="tx-name">TechGadgets Ltd</div>
+                    <div class="tx-sub">Card not present · SE → NG · 02:14</div>
+                  </div>
+                  <div class="tx-amount neg">€3,420</div>
+                  <span class="risk-pill risk-high">87 risk</span>
+                </div>
+
+                <div class="tx-row">
+                  <div class="tx-icon warn">!</div>
+                  <div class="tx-info">
+                    <div class="tx-name">Spotify AB</div>
+                    <div class="tx-sub">Recurring · SE · 08:00</div>
+                  </div>
+                  <div class="tx-amount neg">€9.99</div>
+                  <span class="risk-pill risk-med">41 risk</span>
+                </div>
+
+                <div class="tx-row">
+                  <div class="tx-icon flag">⚑</div>
+                  <div class="tx-info">
+                    <div class="tx-name">Unknown Merchant</div>
+                    <div class="tx-sub">New payee · rapid sequence · 09:47</div>
+                  </div>
+                  <div class="tx-amount neg">€780</div>
+                  <span class="risk-pill risk-high">91 risk</span>
+                </div>
+
+                <div class="tx-row">
+                  <div class="tx-icon ok">✓</div>
+                  <div class="tx-info">
+                    <div class="tx-name">ICA Supermarket</div>
+                    <div class="tx-sub">POS · SE · 10:02</div>
+                  </div>
+                  <div class="tx-amount neg">€54.30</div>
+                  <span class="risk-pill risk-low">6 risk</span>
+                </div>
+
+                <div class="tx-row">
+                  <div class="tx-icon warn">!</div>
+                  <div class="tx-info">
+                    <div class="tx-name">Crypto Exchange X</div>
+                    <div class="tx-sub">First use · large amount · 10:18</div>
+                  </div>
+                  <div class="tx-amount neg">€1,200</div>
+                  <span class="risk-pill risk-med">58 risk</span>
+                </div>
+              </div>
+
+              <!-- Alert detail panel -->
+              <div class="alert-panel">
+                <div class="alert-header">
+                  <div class="alert-title">High risk transaction</div>
+                  <div class="alert-sub">TechGadgets Ltd · €3,420 · 02:14 UTC</div>
+                </div>
+                <div class="alert-body">
+                  <div style="font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);">Risk score breakdown</div>
+                  <div class="score-row">
+                    <span class="score-label">Location anomaly</span>
+                    <div class="score-right">
+                      <div class="score-bar-wrap"><div class="score-bar-fill fill-red" style="width:92%"></div></div>
+                      <span class="score-val" style="color:var(--red)">0.92</span>
+                    </div>
+                  </div>
+                  <div class="score-row">
+                    <span class="score-label">Time anomaly</span>
+                    <div class="score-right">
+                      <div class="score-bar-wrap"><div class="score-bar-fill fill-red" style="width:78%"></div></div>
+                      <span class="score-val" style="color:var(--red)">0.78</span>
+                    </div>
+                  </div>
+                  <div class="score-row">
+                    <span class="score-label">Amount vs. history</span>
+                    <div class="score-right">
+                      <div class="score-bar-wrap"><div class="score-bar-fill fill-amber" style="width:61%"></div></div>
+                      <span class="score-val" style="color:var(--amber)">0.61</span>
+                    </div>
+                  </div>
+                  <div class="score-row">
+                    <span class="score-label">Merchant familiarity</span>
+                    <div class="score-right">
+                      <div class="score-bar-wrap"><div class="score-bar-fill fill-blue" style="width:30%"></div></div>
+                      <span class="score-val" style="color:var(--accent2)">0.30</span>
+                    </div>
+                  </div>
+
+                  <div style="font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-top:4px;">Signals</div>
+                  <div class="signal-list">
+                    <div class="signal-item bad">Card used 4,200 km from last transaction (8 hrs ago)</div>
+                    <div class="signal-item bad">Transaction at 02:14 local time, outside normal pattern</div>
+                    <div class="signal-item warn">Amount 6× higher than 90-day average</div>
+                    <div class="signal-item good">Card not previously reported lost or stolen</div>
+                  </div>
+                </div>
+
+                <div class="action-row">
+                  <button class="action-btn block">Block transaction</button>
+                  <button class="action-btn review">Flag for review</button>
+                </div>
+
+                <div class="mini-chart">
+                  <div class="mini-chart-label">Transaction history, 30d</div>
+                  <div class="chart-bars">
+                    <div class="bar" style="height:30%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:45%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:25%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:60%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:35%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:50%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:40%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:30%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:55%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:45%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:70%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:35%; background:var(--accent2)"></div>
+                    <div class="bar" style="height:100%; background:var(--red); opacity:1"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:0.875rem; color:var(--text-muted); text-align:center; margin-top:0.75rem">Concept mockup — "ClearSignal" fraud intelligence dashboard</p>
+    </div>
+
+    <div class="content-section fade-up" id="reflection">
+      <div class="section-label">Reflection</div>
+      <h2>What this project taught me</h2>
+      <p>The hardest design decision was how much information to show in the default view. Showing every signal for every transaction would overwhelm analysts reviewing dozens of alerts a day. Hiding too much would undermine the explainability the entire concept was built around.</p>
+      <p>The solution was selective emphasis: the transaction list shows only the risk score, while the detail panel shows the full breakdown for the selected transaction. Depth is always one click away, never buried.</p>
+
+      <div class="reflection-grid">
+        <div class="reflection-card">
+          <label>What worked</label>
+          <p>Placing the action buttons directly below the signal breakdown. Connecting the reasoning to the action in a single view made the decision feel supported rather than arbitrary.</p>
+        </div>
+        <div class="reflection-card">
+          <label>What I'd improve</label>
+          <p>With real analyst access I'd test whether the score breakdown is read in the order intended, and whether the signal labels are phrased in a way analysts already recognise from their own mental models.</p>
+        </div>
+        <div class="reflection-card">
+          <label>Design principle reinforced</label>
+          <p>Designing for high-stakes decisions means designing for the moment when the human takes over from the AI. That handoff deserves as much attention as any other interaction in the flow.</p>
+        </div>
+        <div class="reflection-card">
+          <label>Why fintech</label>
+          <p>Financial products sit at the intersection of data, trust, and consequential decisions. That combination is exactly where I find the most interesting design problems.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="case-pagination">
+  <a href="case-student-move.html" class="pagination-link">
+    <span class="direction">← Previous</span>
+    <span class="title">MoveWise</span>
+  </a>
+  <a href="case-03-degiro.html" class="pagination-link next">
+    <span class="direction">Next case →</span>
+    <span class="title">Degiro Trading View</span>
+  </a>
+</div>
+
+<footer>
+  <p>© 2025 Signal Archive</p>
+  <p style="font-size:12px; color:var(--text-muted)">Case 02 of 03</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  const sections = document.querySelectorAll('.content-section');
+  const navLinks = document.querySelectorAll('.case-nav-sidebar a');
+  const scrollObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.case-nav-sidebar a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => scrollObserver.observe(s));
+</script>
+</body>
+</html>

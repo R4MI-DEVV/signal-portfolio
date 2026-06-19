@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Case 03 — DEGIRO Redesign · Signal Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0B0F14; --surface: #111823; --surface2: #161E2B;
+  --accent: #4DE3FF; --accent2: #5B8CFF; --amber: #FFCC66;
+  --green: #4DFFB4; --red: #FF6B6B;
+  --text-primary: #E6EDF3; --text-secondary: #A0A8B3; --text-muted: #5A6475;
+  --border: rgba(255,255,255,0.07); --border-hover: rgba(77,227,255,0.2);
+  --radius: 8px; --radius-lg: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+h1,h2,h3,h4,h5 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.2; color: var(--text-primary); }
+a { color: inherit; text-decoration: none; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 3rem; background: rgba(11,15,20,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+.nav-logo { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.08em; text-transform: uppercase; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-size: 13px; color: var(--text-secondary); letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+
+.case-hero { padding: 10rem 3rem 5rem; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end; }
+.case-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+.case-id { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.case-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); }
+.case-type { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.concept-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 4px 12px; border-radius: 20px; background: rgba(255,204,102,0.08); border: 1px solid rgba(255,204,102,0.2); color: var(--amber); letter-spacing: 0.04em; margin-top: 1.25rem; }
+.case-hero h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 1rem; line-height: 1.05; }
+.case-hero .subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 420px; }
+.case-meta-block { display: flex; flex-direction: column; gap: 1.5rem; padding: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.meta-item label { display: block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.meta-item p { font-size: 0.875rem; color: var(--text-secondary); }
+.meta-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); }
+
+.divider { max-width: 1100px; margin: 0 auto; height: 1px; background: var(--border); }
+
+.case-body { max-width: 1100px; margin: 0 auto; padding: 0 3rem 6rem; display: grid; grid-template-columns: 220px 1fr; gap: 5rem; align-items: start; }
+.case-nav-sidebar { position: sticky; top: 6rem; }
+.case-nav-sidebar ul { list-style: none; border-left: 1px solid var(--border); }
+.case-nav-sidebar li a { display: block; padding: 0.5rem 1.25rem; font-size: 13px; color: var(--text-muted); border-left: 1px solid transparent; margin-left: -1px; transition: color 0.2s, border-color 0.2s; }
+.case-nav-sidebar li a:hover { color: var(--text-secondary); }
+.case-nav-sidebar li a.active { color: var(--accent); border-left-color: var(--accent); }
+
+.content-section { margin-bottom: 4rem; scroll-margin-top: 6rem; }
+.section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+.content-section h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+.content-section p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.85; margin-bottom: 1rem; }
+.content-section p strong { color: var(--text-primary); font-weight: 500; }
+
+.insight { background: rgba(255,204,102,0.05); border: 1px solid rgba(255,204,102,0.15); border-left: 2px solid var(--amber); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+.insight-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); opacity: 0.7; margin-bottom: 0.5rem; }
+.insight p { color: rgba(255,220,120,0.85) !important; font-size: 0.925rem !important; margin: 0 !important; font-style: italic; }
+
+.process-steps { display: flex; flex-direction: column; gap: 1px; margin-top: 1.5rem; }
+.process-step { display: grid; grid-template-columns: 48px 1fr; gap: 1.5rem; align-items: start; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1px; }
+.step-num { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.08em; padding-top: 3px; }
+.step-content h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+.step-content p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+.feature-list { list-style: none; margin-top: 1.25rem; display: flex; flex-direction: column; gap: 10px; }
+.feature-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+.feature-list li::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 8px; flex-shrink: 0; opacity: 0.7; }
+
+/* BEFORE / AFTER */
+.comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+.comparison-side { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); }
+.comparison-label { padding: 0.6rem 1rem; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+.label-before { background: rgba(255,107,107,0.08); color: var(--red); border-bottom: 1px solid rgba(255,107,107,0.15); }
+.label-after { background: rgba(77,255,180,0.06); color: var(--green); border-bottom: 1px solid rgba(77,255,180,0.12); }
+
+/* BEFORE — current DEGIRO style: light, cluttered, flat */
+.before-ui { background: #FFFFFF; padding: 0; min-height: 340px; font-family: 'Inter', sans-serif; }
+.before-header { background: #F7F7F7; border-bottom: 1px solid #E5E5E5; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; }
+.before-logo { font-weight: 800; color: #FF6600; font-size: 13px; letter-spacing: -0.02em; }
+.before-header-right { display: flex; gap: 12px; align-items: center; }
+.before-header-right span { font-size: 10px; color: #666; }
+.before-nav-tabs { display: flex; border-bottom: 1px solid #E5E5E5; background: #fff; }
+.before-tab { font-size: 10px; padding: 7px 12px; color: #666; border-bottom: 2px solid transparent; cursor: pointer; }
+.before-tab.active { color: #FF6600; border-bottom-color: #FF6600; font-weight: 600; }
+.before-body { padding: 10px; }
+.before-section-title { font-size: 10px; font-weight: 700; color: #333; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.before-table { width: 100%; border-collapse: collapse; }
+.before-table th { font-size: 9px; color: #999; text-align: left; padding: 4px 4px; border-bottom: 1px solid #E5E5E5; font-weight: 500; }
+.before-table td { font-size: 11px; color: #222; padding: 6px 4px; border-bottom: 1px solid #F5F5F5; }
+.before-green { color: #1AA358; }
+.before-red { color: #D32F2F; }
+.before-kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.before-kpi { background: #F9F9F9; border: 1px solid #E5E5E5; border-radius: 4px; padding: 7px 8px; }
+.before-kpi-label { font-size: 9px; color: #999; margin-bottom: 2px; }
+.before-kpi-val { font-size: 13px; font-weight: 700; color: #222; }
+.before-btn-row { display: flex; gap: 6px; margin-top: 8px; }
+.before-btn { flex: 1; padding: 6px; font-size: 10px; font-weight: 700; border-radius: 3px; border: none; cursor: pointer; text-align: center; }
+.before-btn-buy { background: #1AA358; color: #fff; }
+.before-btn-sell { background: #D32F2F; color: #fff; }
+.before-order-row { display: flex; gap: 4px; margin-top: 6px; }
+.before-input { flex: 1; border: 1px solid #ccc; border-radius: 3px; padding: 5px 6px; font-size: 10px; color: #333; background: #fff; }
+.before-select { flex: 1; border: 1px solid #ccc; border-radius: 3px; padding: 5px 4px; font-size: 10px; color: #333; background: #fff; }
+
+/* AFTER — redesign: dark, clear, structured */
+.after-ui { background: var(--bg); min-height: 340px; display: flex; flex-direction: column; }
+.after-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 7px 12px; display: flex; align-items: center; justify-content: space-between; }
+.after-logo { font-weight: 800; color: #FF6600; font-size: 12px; letter-spacing: -0.01em; }
+.after-header-right { display: flex; gap: 10px; align-items: center; }
+.after-header-right span { font-size: 10px; color: var(--text-muted); }
+.after-header-right span.hl { color: var(--accent); }
+.after-tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
+.after-tab { font-size: 10px; padding: 7px 12px; color: var(--text-muted); border-bottom: 2px solid transparent; cursor: pointer; }
+.after-tab.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+.after-body { display: grid; grid-template-columns: 1fr 90px; flex: 1; gap: 1px; background: var(--border); }
+.after-main-panel { background: var(--surface); padding: 10px; }
+.after-side-panel { background: var(--surface2); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+
+.after-kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.after-kpi { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 7px 8px; }
+.after-kpi-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px; }
+.after-kpi-val { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; }
+
+.after-table { width: 100%; border-collapse: collapse; }
+.after-table th { font-size: 9px; color: var(--text-muted); text-align: left; padding: 4px; border-bottom: 1px solid var(--border); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+.after-table td { font-size: 11px; padding: 6px 4px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+.after-table td.name { color: var(--text-primary); font-weight: 500; }
+.after-table td.mono { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--text-primary); }
+.after-green { color: var(--green); }
+.after-red { color: var(--red); }
+.after-row-active td { background: rgba(77,227,255,0.04); }
+.after-row-active td.name { color: var(--accent); }
+
+.side-label { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+.side-val { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700; }
+.side-sub { font-size: 9px; margin-top: 1px; }
+.side-divider { height: 1px; background: var(--border); }
+
+.sparkline { display: flex; align-items: flex-end; gap: 2px; height: 24px; margin-top: 4px; }
+.spark { flex: 1; border-radius: 1px 1px 0 0; }
+
+.after-btn-row { display: flex; gap: 4px; margin-top: 6px; }
+.after-btn { flex: 1; padding: 5px 4px; font-size: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; text-align: center; }
+.after-btn-buy { background: rgba(77,255,180,0.12); color: var(--green); border: 1px solid rgba(77,255,180,0.2); }
+.after-btn-sell { background: rgba(255,107,107,0.1); color: var(--red); border: 1px solid rgba(255,107,107,0.18); }
+
+.after-order { margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
+.after-order-input { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 5px 7px; font-size: 10px; color: var(--text-secondary); width: 100%; }
+.after-order-input:focus { outline: none; border-color: var(--accent); }
+
+/* CHANGES */
+.changes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+.change-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+.change-card .change-num { font-size: 11px; color: var(--accent); letter-spacing: 0.08em; font-weight: 600; margin-bottom: 0.5rem; }
+.change-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; }
+.change-card p { font-size: 0.825rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+.reflection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem; }
+.reflection-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+.reflection-card label { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+.reflection-card p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+.case-pagination { max-width: 1100px; margin: 0 auto; padding: 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); }
+.pagination-link { display: flex; flex-direction: column; gap: 4px; }
+.pagination-link .direction { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.pagination-link .title { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text-primary); transition: color 0.2s; }
+.pagination-link:hover .title { color: var(--accent); }
+.pagination-link.next { text-align: right; }
+
+footer { border-top: 1px solid var(--border); padding: 2rem 3rem; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+footer p { font-size: 12px; color: var(--text-muted); }
+
+.fade-up { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.fade-up.visible { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  .case-hero { grid-template-columns: 1fr; gap: 2rem; padding: 8rem 1.5rem 3rem; }
+  .case-body { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem 4rem; }
+  .case-nav-sidebar { display: none; }
+  .comparison { grid-template-columns: 1fr; }
+  .changes-grid, .reflection-grid { grid-template-columns: 1fr; }
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span>Signal</span>&nbsp;Archive</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="index.html#case-files" class="active">Case Files</a></li>
+    <li><a href="background.html">Background</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="case-hero">
+  <div>
+    <div class="case-eyebrow">
+      <span class="case-id">Case 03</span>
+      <span class="case-dot"></span>
+      <span class="case-type">Redesign · Trading Platform</span>
+    </div>
+    <h1>DEGIRO Trading View</h1>
+    <p class="subtitle">A concept redesign of DEGIRO's portfolio dashboard, addressing real user friction through clearer hierarchy, a modern visual identity, and actions placed next to the data that justifies them.</p>
+    <div class="concept-badge">Concept redesign</div>
+  </div>
+  <div class="case-meta-block fade-up">
+    <div class="meta-item">
+      <label>Core challenge</label>
+      <p>DEGIRO's interface hasn't kept pace with modern trading platforms. Strong functionality is let down by flat hierarchy, cluttered layouts, and a visual language that makes fast scanning harder than it should be.</p>
+    </div>
+    <div class="meta-item">
+      <label>Platform</label>
+      <p>Web, desktop portfolio and trading view</p>
+    </div>
+    <div class="meta-item">
+      <label>Tags</label>
+      <div class="meta-tags">
+        <span class="tag">UI Redesign</span>
+        <span class="tag">Trading</span>
+        <span class="tag">Visual Identity</span>
+        <span class="tag">Fintech</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="case-body">
+  <nav class="case-nav-sidebar">
+    <ul>
+      <li><a href="#background" class="active">Background</a></li>
+      <li><a href="#analysis">Analysis</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#goals">Design Goals</a></li>
+      <li><a href="#redesign">Redesign</a></li>
+      <li><a href="#changes">Key Changes</a></li>
+      <li><a href="#reflection">Reflection</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <div class="content-section fade-up" id="background">
+      <div class="section-label">Background</div>
+      <h2>A platform with real friction</h2>
+      <p>DEGIRO is one of Europe's largest retail brokers, serving over 3 million customers across the continent, including a significant user base in Sweden. It built its reputation on extremely low trading fees, making markets accessible to a wider audience than traditional brokers allowed.</p>
+      <p>But the interface has not kept pace with the product's growth. User reviews consistently describe the platform as "clunky" and note that it "was fine in 2018, but it's not good enough" for today's standards. The functionality is all there. The experience of using it is where the gap exists.</p>
+      <p>This redesign concept focuses on DEGIRO's portfolio and trading view, the screen active traders return to most frequently. The goal is not to change what the platform does, but to make it significantly clearer and faster to use.</p>
+    </div>
+
+    <div class="content-section fade-up" id="analysis">
+      <div class="section-label">Analysis</div>
+      <h2>What the current interface gets wrong</h2>
+      <p>The current DEGIRO desktop interface uses a light, flat visual language across the entire product. Every element, from navigation tabs to portfolio data to order inputs, receives roughly equal visual weight. There is no clear hierarchy directing the user's eye toward what matters most.</p>
+      <p>For a user who checks their portfolio briefly, this is manageable. For an active trader making time-sensitive decisions, it creates real friction: too much scanning, too little structure.</p>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">A.01</span>
+          <div class="step-content">
+            <h4>Visual hierarchy audit</h4>
+            <p>Mapped the current portfolio view against the tasks active traders perform most: checking position performance, reading price changes, and placing orders. Identified where visual weight matched task importance, and where it didn't.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">A.02</span>
+          <div class="step-content">
+            <h4>User feedback review</h4>
+            <p>Reviewed public user feedback from app stores and trading forums. Consistent themes included cluttered navigation, poor readability of price data, and the disconnect between viewing a position and acting on it.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">A.03</span>
+          <div class="step-content">
+            <h4>Competitive reference</h4>
+            <p>Reviewed interfaces from Trading 212, Saxo Bank, and Interactive Brokers to understand how modern trading platforms handle information density, colour coding, and the relationship between data and action.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="findings">
+      <div class="section-label">Findings</div>
+      <h2>What the analysis revealed</h2>
+
+      <ul class="feature-list">
+        <li>All elements compete equally for attention. Price data, navigation, account info, and order inputs sit at the same visual level, making it hard to know where to look first.</li>
+        <li>Positive and negative price changes rely solely on colour with no structural differentiation. On a bright white background, the contrast is lower than it needs to be for fast scanning.</li>
+        <li>The order placement flow is visually disconnected from the portfolio data. Users must shift their focus significantly between seeing a price and acting on it.</li>
+        <li>The interface feels dated because it is. The flat, form-heavy aesthetic belongs to an earlier era of web design and reads as low-confidence compared to modern fintech products.</li>
+      </ul>
+
+      <div class="insight">
+        <div class="insight-label">Key insight</div>
+        <p>DEGIRO's core product is strong. The redesign challenge is not about adding features, it's about making the existing functionality feel as modern and confident as the platform's actual capabilities.</p>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="goals">
+      <div class="section-label">Design Goals</div>
+      <h2>What the redesign needed to achieve</h2>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">G.01</span>
+          <div class="step-content">
+            <h4>Establish a clear visual hierarchy</h4>
+            <p>Portfolio performance and price changes should dominate. Navigation and secondary controls should recede. The trader's eye should land in the right place without effort.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.02</span>
+          <div class="step-content">
+            <h4>Modernise the visual identity without abandoning the brand</h4>
+            <p>DEGIRO's orange accent is recognisable and should survive the redesign. What changes is the background, the typography weight, and the density of visual elements around it.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.03</span>
+          <div class="step-content">
+            <h4>Shorten the path from information to action</h4>
+            <p>The selected position and the order panel should live in the same view. A trader should be able to see a price and place an order without moving their eyes across the screen.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.04</span>
+          <div class="step-content">
+            <h4>Improve scannability of price data</h4>
+            <p>Green and red changes read faster on dark backgrounds. Monospace numerals prevent column shift as values update. Both are small changes with significant impact on usability.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="redesign">
+      <div class="section-label">Redesign</div>
+      <h2>Before and after</h2>
+      <p>The comparison shows the current DEGIRO portfolio view visual language alongside the redesign. The information is the same. The hierarchy, contrast, and relationship between data and action are fundamentally different.</p>
+
+      <div class="comparison">
+
+        <!-- BEFORE -->
+        <div class="comparison-side">
+          <div class="comparison-label label-before">✕ Current — flat, cluttered, slow to scan</div>
+          <div class="before-ui">
+            <div class="before-header">
+              <span class="before-logo">DEGIRO</span>
+              <div class="before-header-right">
+                <span>Portfolio</span><span>Orders</span><span>Account</span>
+              </div>
+            </div>
+            <div class="before-nav-tabs">
+              <div class="before-tab active">Portfolio</div>
+              <div class="before-tab">Orders</div>
+              <div class="before-tab">Transactions</div>
+              <div class="before-tab">Account</div>
+            </div>
+            <div class="before-body">
+              <div class="before-kpi-row">
+                <div class="before-kpi">
+                  <div class="before-kpi-label">Portfolio value</div>
+                  <div class="before-kpi-val">€8,420.00</div>
+                </div>
+                <div class="before-kpi">
+                  <div class="before-kpi-label">Day return</div>
+                  <div class="before-kpi-val before-green">+€124.40</div>
+                </div>
+              </div>
+              <div class="before-section-title">Positions</div>
+              <table class="before-table">
+                <tr><th>Product</th><th>Price</th><th>Change</th><th>Value</th></tr>
+                <tr><td>Apple Inc.</td><td>€189.40</td><td class="before-green">+1.2%</td><td>€1,894</td></tr>
+                <tr><td>ASML Hold.</td><td>€742.60</td><td class="before-red">-0.8%</td><td>€2,228</td></tr>
+                <tr><td>Spotify</td><td>€312.10</td><td class="before-green">+2.4%</td><td>€936</td></tr>
+                <tr><td>Volvo B</td><td>€241.50</td><td class="before-red">-1.1%</td><td>€724</td></tr>
+              </table>
+              <div class="before-btn-row" style="margin-top:10px">
+                <button class="before-btn before-btn-buy">Buy</button>
+                <button class="before-btn before-btn-sell">Sell</button>
+              </div>
+              <div class="before-order-row">
+                <input class="before-input" placeholder="Quantity" />
+                <select class="before-select"><option>Market</option><option>Limit</option></select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="comparison-side">
+          <div class="comparison-label label-after">✓ Redesign — dark, structured, scannable</div>
+          <div class="after-ui">
+            <div class="after-header">
+              <span class="after-logo">DEGIRO</span>
+              <div class="after-header-right">
+                <span>Jan, 2026</span>
+                <span class="hl">Live</span>
+              </div>
+            </div>
+            <div class="after-tabs">
+              <div class="after-tab active">Portfolio</div>
+              <div class="after-tab">Orders</div>
+              <div class="after-tab">History</div>
+            </div>
+            <div class="after-body">
+              <div class="after-main-panel">
+                <div class="after-kpi-row">
+                  <div class="after-kpi">
+                    <div class="after-kpi-label">Total value</div>
+                    <div class="after-kpi-val">€8,420</div>
+                  </div>
+                  <div class="after-kpi">
+                    <div class="after-kpi-label">Today</div>
+                    <div class="after-kpi-val after-green">+€124</div>
+                  </div>
+                </div>
+                <table class="after-table">
+                  <tr><th>Product</th><th>Price</th><th>Chg</th></tr>
+                  <tr><td class="name">Apple</td><td class="mono">189.40</td><td class="after-green">+1.2%</td></tr>
+                  <tr><td class="name">ASML</td><td class="mono">742.60</td><td class="after-red">-0.8%</td></tr>
+                  <tr class="after-row-active"><td class="name">Spotify</td><td class="mono">312.10</td><td class="after-green">+2.4%</td></tr>
+                  <tr><td class="name">Volvo B</td><td class="mono">241.50</td><td class="after-red">-1.1%</td></tr>
+                </table>
+              </div>
+              <div class="after-side-panel">
+                <div>
+                  <div class="side-label">Spotify</div>
+                  <div class="side-val" style="font-size:11px">€312.10</div>
+                  <div class="side-sub after-green">+2.4%</div>
+                </div>
+                <div class="side-divider"></div>
+                <div>
+                  <div class="side-label">7 day</div>
+                  <div class="sparkline">
+                    <div class="spark" style="height:35%; background:var(--accent2)"></div>
+                    <div class="spark" style="height:50%; background:var(--accent2)"></div>
+                    <div class="spark" style="height:42%; background:var(--accent2)"></div>
+                    <div class="spark" style="height:65%; background:var(--accent2)"></div>
+                    <div class="spark" style="height:58%; background:var(--accent2)"></div>
+                    <div class="spark" style="height:80%; background:var(--accent2)"></div>
+                    <div class="spark" style="height:100%; background:var(--green)"></div>
+                  </div>
+                </div>
+                <div class="side-divider"></div>
+                <div class="after-btn-row">
+                  <button class="after-btn after-btn-buy">Buy</button>
+                  <button class="after-btn after-btn-sell">Sell</button>
+                </div>
+                <div class="after-order">
+                  <input class="after-order-input" placeholder="Qty" />
+                  <input class="after-order-input" placeholder="Limit €" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="changes">
+      <div class="section-label">Key Changes</div>
+      <h2>What changed and why</h2>
+
+      <div class="changes-grid">
+        <div class="change-card">
+          <div class="change-num">01</div>
+          <h4>Dark background</h4>
+          <p>Reduces eye strain during extended sessions and dramatically improves contrast for colour-coded price data. Green gains and red losses are immediately readable without squinting.</p>
+        </div>
+        <div class="change-card">
+          <div class="change-num">02</div>
+          <h4>Monospace price numerals</h4>
+          <p>Using Space Grotesk in tabular figures prevents column shift as prices update in real time. A small detail with a significant impact on readability during live trading.</p>
+        </div>
+        <div class="change-card">
+          <div class="change-num">03</div>
+          <h4>Selected row highlight</h4>
+          <p>A subtle cyan tint shows which position is active. The side panel updates to reflect it, showing the price, sparkline, and order inputs for that specific position only.</p>
+        </div>
+        <div class="change-card">
+          <div class="change-num">04</div>
+          <h4>Order panel in the sidebar</h4>
+          <p>Buy, sell, and order inputs now live directly beside the selected position's data. The user's eye doesn't need to travel. Information and action are in the same view.</p>
+        </div>
+        <div class="change-card">
+          <div class="change-num">05</div>
+          <h4>Sparkline for selected position</h4>
+          <p>A 7-day sparkline gives directional context for the selected stock without opening a full chart. Enough to inform a quick decision. More detail is one click away.</p>
+        </div>
+        <div class="change-card">
+          <div class="change-num">06</div>
+          <h4>DEGIRO orange retained</h4>
+          <p>The brand's signature orange stays in the logo. The redesign evolves the visual identity without replacing it, making the result feel like a natural progression rather than a replacement.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="reflection">
+      <div class="section-label">Reflection</div>
+      <h2>What this exercise showed me</h2>
+      <p>The most interesting constraint in this project was working within an existing brand. DEGIRO's orange is recognisable and carries real equity with its users. The challenge was to modernise the visual language around it without touching the one element most users associate with the product.</p>
+      <p>That constraint pushed the redesign in a better direction. Rather than a clean-slate dark theme, the result is a dark interface with a warm orange anchor, which actually reads as more distinctive than either a pure dark or pure light design would.</p>
+
+      <div class="reflection-grid">
+        <div class="reflection-card">
+          <label>What worked</label>
+          <p>The sidebar order panel. Collapsing the distance between position data and order placement made the flow feel cohesive in a way that was immediately visible in the before/after comparison.</p>
+        </div>
+        <div class="reflection-card">
+          <label>What I'd test next</label>
+          <p>Whether DEGIRO's existing users, many of whom are accustomed to the light interface, would adapt quickly to the dark design or experience initial friction. That's a real usability question the concept doesn't yet answer.</p>
+        </div>
+        <div class="reflection-card">
+          <label>The broader principle</label>
+          <p>Visual identity is not decoration. In a trading context, how data looks directly affects how fast it's processed and how confident the resulting decision feels. Clarity is a functional requirement, not an aesthetic preference.</p>
+        </div>
+        <div class="reflection-card">
+          <label>Why this matters for the role</label>
+          <p>The job involves redesigning existing dashboards to harmonise with a new visual identity. This is a direct demonstration of that: a real product, a clear problem, a considered redesign that respects the original while making it significantly better.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="case-pagination">
+  <a href="case-ai-dashboard.html" class="pagination-link">
+    <span class="direction">← Previous</span>
+    <span class="title">AI Decision Dashboard</span>
+  </a>
+  <a href="index.html#case-files" class="pagination-link next">
+    <span class="direction">Back to</span>
+    <span class="title">All Case Files</span>
+  </a>
+</div>
+
+<footer>
+  <p>© 2025 Signal Archive</p>
+  <p style="font-size:12px; color:var(--text-muted)">Case 03 of 03</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  const sections = document.querySelectorAll('.content-section');
+  const navLinks = document.querySelectorAll('.case-nav-sidebar a');
+  const scrollObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.case-nav-sidebar a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => scrollObserver.observe(s));
+</script>
+</body>
+</html>

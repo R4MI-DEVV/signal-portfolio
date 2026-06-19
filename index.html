@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Signal Archive — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0B0F14;
+    --surface: #111823;
+    --surface2: #161E2B;
+    --accent: #4DE3FF;
+    --accent2: #5B8CFF;
+    --amber: #FFCC66;
+    --text-primary: #E6EDF3;
+    --text-secondary: #A0A8B3;
+    --text-muted: #5A6475;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(77,227,255,0.2);
+    --radius: 8px;
+    --radius-lg: 14px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(11,15,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text-primary); }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--text-secondary);
+  }
+
+  .hero-desc {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  .btn-primary:hover {
+    background: #7AEBFF;
+    border-color: #7AEBFF;
+  }
+
+  .btn-ghost {
+    color: var(--text-secondary);
+    border-color: var(--border);
+    background: transparent;
+  }
+
+  .btn-ghost:hover {
+    color: var(--text-primary);
+    border-color: rgba(255,255,255,0.15);
+    background: var(--surface);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 3rem;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--text-muted);
+    animation: pulse-line 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-line {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+  }
+
+  section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 6rem 3rem;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-desc {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    max-width: 540px;
+    margin-bottom: 3.5rem;
+  }
+
+  .philosophy {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+
+  .philosophy-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+  }
+
+  .philosophy-item {
+    padding: 2rem;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+
+  .philosophy-item:last-child { border-right: none; }
+
+  .philosophy-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .philosophy-item h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .philosophy-item p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .case-card {
+    background: var(--surface);
+    padding: 2.5rem;
+    position: relative;
+    transition: background 0.25s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .case-card:hover { background: var(--surface2); }
+
+  .case-card.full-width { grid-column: 1 / -1; }
+
+  .case-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .case-tag .case-id {
+    color: var(--accent);
+    font-family: 'Space Grotesk', monospace;
+  }
+
+  .case-card h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .case-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .case-meta {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .case-tags-list {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .case-arrow {
+    color: var(--text-muted);
+    font-size: 18px;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .case-card:hover .case-arrow { color: var(--accent); transform: translateX(4px); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-sidebar { position: sticky; top: 6rem; }
+
+  .about-intro {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-top: 1rem;
+  }
+
+  .timeline {
+    margin-top: 2rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 1.75rem 1.5rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--text-muted);
+  }
+
+  .timeline-item:last-child { padding-bottom: 0; }
+
+  .timeline-item.active::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(77,227,255,0.4);
+  }
+
+  .timeline-year {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+  }
+
+  .timeline-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .timeline-sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .about-content p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+  }
+
+  .about-content strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 2rem;
+  }
+
+  .tool-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.6rem 1rem;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-align: center;
+    letter-spacing: 0.02em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .tool-item:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+
+  .philosophy-quote {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 3rem;
+    text-align: center;
+  }
+
+  .philosophy-quote blockquote {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .philosophy-quote blockquote span { color: var(--text-primary); }
+
+  .contact-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .contact-block h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+  .contact-block p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .contact-link {
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+
+  .contact-link:hover { color: var(--accent); }
+  .contact-link svg { width: 14px; height: 14px; opacity: 0.6; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  footer p {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  footer .footer-mark {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section, .hero { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .hero h1 { font-size: 2.4rem; }
+    .cases-grid { grid-template-columns: 1fr; }
+    .case-card.full-width { grid-column: 1; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-sidebar { position: static; }
+    .philosophy-inner { grid-template-columns: 1fr; }
+    .philosophy-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .contact-block { grid-template-columns: 1fr; }
+    .contact-links { align-items: flex-start; }
+    .hero-scroll { left: 1.5rem; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><span>Signal</span>&nbsp;Archive</div>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#case-files">Case Files</a></li>
+    <li><a href="origin.html">Background</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="overview">
+  <div class="hero-label">UX Design Portfolio</div>
+  <h1>Understand people<br />first.<em> Design second.</em></h1>
+  <p class="hero-desc">
+    I'm a UX designer with an engineering mindset. I investigate problems before reaching for solutions. Every project starts with questions.
+  </p>
+  <div class="hero-actions">
+    <a href="#case-files" class="btn btn-primary">View Case Files</a>
+    <a href="origin.html" class="btn btn-ghost">About me</a>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<div class="divider"></div>
+
+<div class="philosophy">
+  <div class="philosophy-inner">
+    <div class="philosophy-item fade-up">
+      <div class="philosophy-num">01. Investigate</div>
+      <h3>Find the real problem</h3>
+      <p>Real design problems are rarely what they seem at first. I start by asking questions, not opening Figma.</p>
+    </div>
+    <div class="philosophy-item fade-up" style="transition-delay: 0.1s">
+      <div class="philosophy-num">02. Structure</div>
+      <h3>Map what matters</h3>
+      <p>Complexity becomes navigable when it's understood. Patterns in research lead to patterns in design.</p>
+    </div>
+    <div class="philosophy-item fade-up" style="transition-delay: 0.2s">
+      <div class="philosophy-num">03. Refine</div>
+      <h3>Iterate toward clarity</h3>
+      <p>Good design earns trust. I design experiences that feel intuitive precisely because they've been rigorously tested.</p>
+    </div>
+  </div>
+</div>
+
+<section id="case-files">
+  <div class="section-label">Case Files</div>
+  <h2 class="section-title">Selected investigations</h2>
+  <p class="section-desc">Three problems. Three types of complexity. One shared goal: clarity for people who need it most.</p>
+
+  <div class="cases-grid">
+
+    <div class="case-card fade-up" onclick="window.location.href='case-student-move.html'">
+      <div class="case-tag"><span class="case-id">Case 01</span>&nbsp;·&nbsp;Mobile App</div>
+      <h3>MoveWise</h3>
+      <p>Students moving to a new city shouldn't have to choose between safety and affordability. MoveWise helps them find trustworthy housing, detect scams, and relocate with confidence.</p>
+      <div class="case-meta">
+        <div class="case-tags-list">
+          <span class="tag">Trust Design</span>
+          <span class="tag">User Research</span>
+          <span class="tag">Mobile UX</span>
+        </div>
+        <span class="case-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="case-card fade-up" style="transition-delay: 0.1s" onclick="window.location.href='case-ai-dashboard.html'">
+      <div class="case-tag"><span class="case-id">Case 02</span>&nbsp;·&nbsp;Dashboard</div>
+      <h3>AI Decision Dashboard</h3>
+      <p>When AI systems make decisions users don't understand, trust collapses. This dashboard makes AI reasoning transparent, displaying confidence, uncertainty, and evidence in a way humans can actually interpret.</p>
+      <div class="case-meta">
+        <div class="case-tags-list">
+          <span class="tag">Data Visualisation</span>
+          <span class="tag">Explainable AI</span>
+          <span class="tag">XAI</span>
+        </div>
+        <span class="case-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="case-card full-width fade-up" style="transition-delay: 0.2s" onclick="window.location.href='case-03-degiro.html'">
+      <div class="case-tag"><span class="case-id">Case 03</span>&nbsp;·&nbsp;UI Redesign</div>
+      <h3>DEGIRO Trading View</h3>
+      <p>DEGIRO's platform has strong functionality but an interface that hasn't kept pace with modern trading tools. This concept redesign addresses visual hierarchy, scannability, and the gap between viewing a position and acting on it, without replacing what makes the product recognisable.</p>
+      <div class="case-meta">
+        <div class="case-tags-list">
+          <span class="tag">UI Redesign</span>
+          <span class="tag">Trading</span>
+          <span class="tag">Visual Identity</span>
+          <span class="tag">Fintech</span>
+        </div>
+        <span class="case-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<div class="philosophy-quote">
+  <blockquote>
+    <span>Great design begins with understanding people</span>, not interfaces. My goal is to transform complexity into experiences that feel intuitive, trustworthy, and meaningful.
+  </blockquote>
+</div>
+
+<div class="divider"></div>
+
+<section id="background">
+  <div class="about-grid">
+    <div class="about-sidebar">
+      <div class="section-label">Background</div>
+      <h2 class="section-title" style="font-size: 1.8rem;">Not a CV.<br />A story.</h2>
+      <p class="about-intro">Technology led me to people. Engineering taught me to look for structure. UX gave me a way to combine both.</p>
+
+      <div class="timeline" style="margin-top: 2.5rem;">
+        <div class="timeline-item">
+          <div class="timeline-year">2022 – 2025</div>
+          <div class="timeline-title">Teknikprogrammet</div>
+          <div class="timeline-sub">Lindholmens Tekniska Gymnasium</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2025</div>
+          <div class="timeline-title">UX Design</div>
+          <div class="timeline-sub">Shifted from building to understanding</div>
+        </div>
+        <div class="timeline-item active">
+          <div class="timeline-year">Feb – May 2026</div>
+          <div class="timeline-title">Volvo Cars, Data &amp; AI Hub</div>
+          <div class="timeline-sub">Tekniksprånget internship</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2026 – 2029</div>
+          <div class="timeline-title">KTH, Chemical Engineering</div>
+          <div class="timeline-sub">Where engineering meets new complexity</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-content">
+      <p>I started coding during my time at Lindholmens Tekniska Gymnasium. I built things on the web and felt the pull of making something that actually works. But I kept running into the same problem: technically correct wasn't the same as useful.</p>
+      <p>That gap, between what a system does and what people actually need, became the thing I wanted to understand. So I moved into UX design, not away from engineering, but toward a different kind of problem-solving.</p>
+      <p>During my internship at <strong>Volvo Cars Data &amp; AI Hub</strong> through Tekniksprånget, I worked with data systems and AI tools within Industrial Operations. That experience sharpened something: the harder it is for people to interpret information, the more important design decisions become. Trust isn't built through aesthetics alone. It's built through clarity.</p>
+      <p>I'm about to begin studying Chemical Engineering at <strong>KTH</strong>, a field that brings new kinds of complexity and new kinds of people to design for. The pattern I see is the same: understanding the system matters, but so does understanding the person standing in front of it.</p>
+
+      <div class="tools-grid">
+        <div class="tool-item">Figma</div>
+        <div class="tool-item">HTML</div>
+        <div class="tool-item">CSS</div>
+        <div class="tool-item">JavaScript</div>
+        <div class="tool-item">C#</div>
+        <div class="tool-item">Git</div>
+        <div class="tool-item">GitHub</div>
+        <div class="tool-item">VS Code</div>
+        <div class="tool-item">Miro</div>
+        <div class="tool-item">Python</div>
+        <div class="tool-item">SQL</div>
+        <div class="tool-item">Power BI</div>
+        <div class="tool-item">Streamlit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="contact">
+  <div class="contact-block fade-up">
+    <div>
+      <div class="section-label">Contact</div>
+      <h3>Let's work together</h3>
+      <p>Open to internships, collaborations, and conversations about design. I'm especially interested in products that help people make better decisions.</p>
+    </div>
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:husseinikram010@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        husseinikram010@gmail.com
+      </a>
+      <a class="contact-link" href="https://linkedin.com/in/ikram-hussein-145771353" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
+        LinkedIn
+      </a>
+      <a class="contact-link" href="https://github.com/R4MI-DEVV" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 — All rights reserved</p>
+  <div class="footer-mark">Signal Archive</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>

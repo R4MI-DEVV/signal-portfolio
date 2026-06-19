@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Background · Signal Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0B0F14; --surface: #111823; --surface2: #161E2B;
+  --accent: #4DE3FF; --accent2: #5B8CFF; --amber: #FFCC66;
+  --text-primary: #E6EDF3; --text-secondary: #A0A8B3; --text-muted: #5A6475;
+  --border: rgba(255,255,255,0.07); --border-hover: rgba(77,227,255,0.2);
+  --radius: 8px; --radius-lg: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+h1,h2,h3,h4,h5 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.2; color: var(--text-primary); }
+a { color: inherit; text-decoration: none; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 3rem;
+  background: rgba(11,15,20,0.85); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.08em; text-transform: uppercase; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-size: 13px; color: var(--text-secondary); letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text-primary); }
+.nav-links a.active { color: var(--text-primary); }
+
+/* PAGE HEADER */
+.page-header {
+  padding: 10rem 3rem 4rem;
+  max-width: 1100px; margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.page-eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+.page-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+.page-header h1 { font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 1.25rem; line-height: 1.05; }
+.page-header h1 em { font-style: normal; color: var(--text-secondary); }
+.page-header .lead { font-size: 1.15rem; color: var(--text-secondary); max-width: 560px; line-height: 1.7; }
+
+/* MAIN LAYOUT */
+.bg-body { max-width: 1100px; margin: 0 auto; padding: 5rem 3rem 6rem; display: grid; grid-template-columns: 300px 1fr; gap: 6rem; align-items: start; }
+.bg-sidebar { position: sticky; top: 6rem; display: flex; flex-direction: column; gap: 2.5rem; }
+
+/* TIMELINE */
+.timeline-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+.timeline { border-left: 1px solid var(--border); padding-left: 0; }
+.tl-item { position: relative; padding: 0 0 2rem 1.75rem; }
+.tl-item::before { content: ''; position: absolute; left: -4px; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--bg); border: 1px solid var(--text-muted); }
+.tl-item.active::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px rgba(77,227,255,0.3); }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-year { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 2px; }
+.tl-name { font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.tl-sub { font-size: 0.8rem; color: var(--text-secondary); }
+.tl-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+
+/* TOOLS */
+.tools-section { }
+.tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 0.75rem; }
+.tool-chip { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.5rem 0.75rem; font-size: 12px; font-weight: 500; color: var(--text-secondary); text-align: center; transition: border-color 0.2s, color 0.2s; }
+.tool-chip:hover { border-color: var(--border-hover); color: var(--text-primary); }
+
+/* CONTENT */
+.bg-content { }
+.content-block { margin-bottom: 4rem; }
+.section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+.content-block h2 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+.content-block p { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.85; margin-bottom: 1.1rem; }
+.content-block p:last-child { margin-bottom: 0; }
+.content-block strong { color: var(--text-primary); font-weight: 500; }
+
+/* PULL QUOTE */
+.pull-quote { border-left: 2px solid var(--accent); padding: 0.5rem 0 0.5rem 1.5rem; margin: 2rem 0; }
+.pull-quote p { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; color: var(--text-primary) !important; line-height: 1.6; font-weight: 400; font-style: normal; margin: 0 !important; }
+
+/* PRINCIPLES */
+.principles-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+.principle-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; transition: border-color 0.2s; }
+.principle-card:hover { border-color: var(--border-hover); }
+.principle-num { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 500; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 1rem; }
+.principle-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+.principle-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+/* VOLVO HIGHLIGHT */
+.highlight-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; margin: 2rem 0; display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; }
+.highlight-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(91,140,255,0.1); border: 1px solid rgba(91,140,255,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.highlight-icon svg { width: 20px; height: 20px; opacity: 0.7; }
+.highlight-content h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+.highlight-content p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; margin: 0; }
+
+/* DIVIDER */
+.section-divider { height: 1px; background: var(--border); margin: 3rem 0; }
+
+/* CTA */
+.bg-cta { max-width: 1100px; margin: 0 auto; padding: 0 3rem 5rem; }
+.cta-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 3rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+.cta-block h3 { font-size: 1.25rem; margin-bottom: 0.4rem; }
+.cta-block p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+.cta-actions { display: flex; gap: 1rem; flex-shrink: 0; }
+.btn { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0.04em; padding: 0.7rem 1.5rem; border-radius: var(--radius); border: 1px solid transparent; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.btn-primary:hover { background: #7AEBFF; }
+.btn-ghost { color: var(--text-secondary); border-color: var(--border); background: transparent; }
+.btn-ghost:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.15); background: var(--surface2); }
+
+footer { border-top: 1px solid var(--border); padding: 2rem 3rem; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+footer p { font-size: 12px; color: var(--text-muted); }
+
+.fade-up { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.fade-up.visible { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .page-header { padding: 8rem 1.5rem 3rem; }
+  .bg-body { grid-template-columns: 1fr; gap: 3rem; padding: 3rem 1.5rem 4rem; }
+  .bg-sidebar { position: static; }
+  .principles-grid { grid-template-columns: 1fr; }
+  .highlight-block { grid-template-columns: 1fr; }
+  .cta-block { flex-direction: column; align-items: flex-start; }
+  .cta-actions { flex-direction: column; }
+  .bg-cta { padding: 0 1.5rem 3rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span>Signal</span>&nbsp;Archive</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="index.html#case-files">Case Files</a></li>
+    <li><a href="origin.html" class="active">Background</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow">Background</div>
+  <h1>Not a CV.<br /><em>A story.</em></h1>
+  <p class="lead">Technology led me to people. Engineering taught me to look for structure. UX design gave me a way to combine both.</p>
+</div>
+
+<!-- BODY -->
+<div class="bg-body">
+
+  <!-- Sidebar -->
+  <aside class="bg-sidebar">
+    <div>
+      <div class="timeline-title">Timeline</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-year">2022 – 2025</div>
+          <div class="tl-name">Teknikprogrammet</div>
+          <div class="tl-sub">Lindholmens Tekniska Gymnasium</div>
+          <div class="tl-note">Where everything started</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2025</div>
+          <div class="tl-name">UX Design</div>
+          <div class="tl-sub">Self-directed study</div>
+          <div class="tl-note">Figma, research methods, systems thinking</div>
+        </div>
+        <div class="tl-item active">
+          <div class="tl-year">Feb – May 2026</div>
+          <div class="tl-name">Volvo Cars</div>
+          <div class="tl-sub">Tekniksprånget, Data &amp; AI Hub</div>
+          <div class="tl-note">Python, Power BI, SQL, Streamlit</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2025 – 2026</div>
+          <div class="tl-name">This portfolio</div>
+          <div class="tl-sub">Signal Archive</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2026 – 2029</div>
+          <div class="tl-name">KTH</div>
+          <div class="tl-sub">BSc Chemical Engineering</div>
+          <div class="tl-note">New complexity, same approach</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tools-section">
+      <div class="timeline-title">Design tools</div>
+      <div class="tools-grid">
+        <div class="tool-chip">Figma</div>
+        <div class="tool-chip">Miro</div>
+        <div class="tool-chip">VS Code</div>
+        <div class="tool-chip">Git</div>
+        <div class="tool-chip">GitHub</div>
+        <div class="tool-chip">HTML</div>
+        <div class="tool-chip">CSS</div>
+        <div class="tool-chip">JavaScript</div>
+        <div class="tool-chip">C#</div>
+      </div>
+      <div class="timeline-title" style="margin-top:1.5rem">Data tools</div>
+      <div class="tools-grid">
+        <div class="tool-chip">Python</div>
+        <div class="tool-chip">SQL</div>
+        <div class="tool-chip">Power BI</div>
+        <div class="tool-chip">Streamlit</div>
+        <div class="tool-chip">Excel</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="bg-content">
+
+    <div class="content-block fade-up">
+      <div class="section-label">Introduction</div>
+      <h2>Who I am today</h2>
+      <p>I'm Ikram Hussein, a UX designer with an engineering mindset. I'm about to begin studying Chemical Engineering at KTH, and in parallel I design digital products that help people make better decisions: when they're uncertain, when the stakes are high, or when the information in front of them is more complex than it needs to be.</p>
+      <p>My background bridges both the technical and human sides of problem-solving. At Volvo Cars I worked inside a data and AI team, gaining hands-on experience with real systems and real data. In my own projects I focus on the people who use those systems. I care about the reasoning behind every design decision as much as the final result.</p>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="content-block fade-up">
+      <div class="section-label">Origin</div>
+      <h2>Where this started</h2>
+      <p>At Lindholmens Tekniska Gymnasium I studied the Technology Programme, where I first encountered web development and found something that stuck. Building things that actually worked felt like a precise, satisfying language for solving precise problems.</p>
+      <p>But the more I built, the more I noticed that technically correct wasn't the same as useful. A feature could work perfectly and still confuse the person it was meant to help. That gap, between what a system does and what people actually need, became the thing I wanted to understand.</p>
+
+      <div class="pull-quote">
+        <p>I didn't move away from engineering. I moved toward a different kind of problem-solving, one where the system to understand is human behaviour, not code.</p>
+      </div>
+
+      <p>I started studying UX design self-directed, working through Figma, research methods, and interaction design principles. Then in early 2026, through Tekniksprånget, I had the opportunity to apply that thinking inside one of Sweden's leading engineering companies.</p>
+    </div>
+
+    <div class="content-block fade-up">
+      <div class="highlight-block">
+        <div class="highlight-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="highlight-content">
+          <h4>Volvo Cars, Data &amp; AI Hub, Industrial Operations</h4>
+          <p>Through Tekniksprånget I joined Volvo Cars' Data &amp; AI Hub team within Industrial Operations from February to May 2026. I gained direct insight into how data and AI are used to support operational processes and decision-making at scale. Working with Python, Excel, Power BI, Streamlit, and SQL through practical assignments, I learned how to work with real data in a corporate environment and collaborate across teams. That experience sharpened something important: the harder it is for people to interpret information, the more consequential every design decision becomes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="content-block fade-up">
+      <div class="section-label">Design Principles</div>
+      <h2>How I think</h2>
+      <p>Rather than listing skills, I'd rather explain the philosophy behind how I approach design problems. Three principles show up consistently across every project.</p>
+
+      <div class="principles-grid">
+        <div class="principle-card">
+          <div class="principle-num">01. Investigate</div>
+          <h3>Find the real problem</h3>
+          <p>Real design problems are rarely what they appear at first. Before sketching anything, I need to understand who's experiencing the problem and what's actually causing it, not just what's visible on the surface.</p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02. Structure</div>
+          <h3>Map what matters</h3>
+          <p>Complexity doesn't disappear. It gets organised. Patterns in research reveal patterns in behaviour, which reveal the structure a design can follow. I spend more time mapping than most people expect.</p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03. Refine</div>
+          <h3>Iterate toward clarity</h3>
+          <p>Good design is earned through iteration, not arrived at in the first pass. I treat each test and each piece of feedback as data, something to be interpreted rather than just acted on.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="content-block fade-up">
+      <div class="section-label">What's next</div>
+      <h2>KTH, Chemical Engineering</h2>
+      <p>In 2026 I begin a BSc in Chemical Engineering at Kungliga Tekniska Högskolan. To some that might seem like a departure from design, but the pattern I see is the same. Chemical engineering is about understanding complex systems, identifying the variables that matter, and designing processes that produce reliable outcomes.</p>
+      <p>Every field I've moved into has brought new kinds of complexity and new kinds of people to design for. The approach doesn't change: <strong>understand the system, understand the person, reduce the distance between them.</strong></p>
+    </div>
+
+  </main>
+</div>
+
+<!-- CTA -->
+<div class="bg-cta">
+  <div class="cta-block fade-up">
+    <div>
+      <h3>Curious about the work?</h3>
+      <p>See how these principles play out across three very different design problems.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="index.html#case-files" class="btn btn-primary">View Case Files</a>
+      <a href="index.html#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Signal Archive</p>
+  <p style="font-size:12px; color: var(--text-muted); font-family: 'Space Grotesk', sans-serif; letter-spacing:0.06em">Background</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

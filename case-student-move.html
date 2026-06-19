@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Case 01 — MoveWise · Signal Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0B0F14; --surface: #111823; --surface2: #161E2B;
+  --accent: #4DE3FF; --accent2: #5B8CFF; --amber: #FFCC66;
+  --text-primary: #E6EDF3; --text-secondary: #A0A8B3; --text-muted: #5A6475;
+  --border: rgba(255,255,255,0.07); --border-hover: rgba(77,227,255,0.2);
+  --radius: 8px; --radius-lg: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+h1,h2,h3,h4,h5 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.2; color: var(--text-primary); }
+a { color: inherit; text-decoration: none; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 3rem;
+  background: rgba(11,15,20,0.85); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.08em; text-transform: uppercase; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-size: 13px; color: var(--text-secondary); letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+
+/* HERO */
+.case-hero {
+  padding: 10rem 3rem 5rem;
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end;
+}
+.case-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+.case-id { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.case-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); }
+.case-type { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.case-hero h1 { font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 1rem; }
+.case-hero .subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 420px; }
+
+.case-meta-block { display: flex; flex-direction: column; gap: 1.5rem; padding: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.meta-item label { display: block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.meta-item p { font-size: 0.875rem; color: var(--text-secondary); }
+.meta-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); }
+
+/* CONTENT */
+.case-body { max-width: 1100px; margin: 0 auto; padding: 0 3rem 6rem; display: grid; grid-template-columns: 220px 1fr; gap: 5rem; align-items: start; }
+
+.case-nav-sidebar { position: sticky; top: 6rem; }
+.case-nav-sidebar ul { list-style: none; border-left: 1px solid var(--border); }
+.case-nav-sidebar li a {
+  display: block; padding: 0.5rem 1.25rem;
+  font-size: 13px; color: var(--text-muted);
+  border-left: 1px solid transparent; margin-left: -1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.case-nav-sidebar li a:hover { color: var(--text-secondary); }
+.case-nav-sidebar li a.active { color: var(--accent); border-left-color: var(--accent); }
+
+/* SECTIONS */
+.content-section { margin-bottom: 4rem; scroll-margin-top: 6rem; }
+.section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+.content-section h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+.content-section p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.85; margin-bottom: 1rem; }
+.content-section p strong { color: var(--text-primary); font-weight: 500; }
+
+.divider { max-width: 1100px; margin: 0 auto; height: 1px; background: var(--border); }
+
+/* PAIN POINTS GRID */
+.pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-top: 1.5rem; }
+.pain-item { background: var(--surface); padding: 1.5rem; }
+.pain-icon { font-size: 1.2rem; margin-bottom: 0.75rem; }
+.pain-item h4 { font-size: 0.875rem; font-weight: 600; margin-bottom: 0.4rem; }
+.pain-item p { font-size: 0.825rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+/* INSIGHT BLOCK */
+.insight { background: rgba(255,204,102,0.05); border: 1px solid rgba(255,204,102,0.15); border-left: 2px solid var(--amber); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+.insight-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); opacity: 0.7; margin-bottom: 0.5rem; }
+.insight p { color: rgba(255,220,120,0.85) !important; font-size: 0.925rem !important; margin: 0 !important; font-style: italic; }
+
+/* PROCESS STEPS */
+.process-steps { display: flex; flex-direction: column; gap: 1px; margin-top: 1.5rem; }
+.process-step { display: grid; grid-template-columns: 48px 1fr; gap: 1.5rem; align-items: start; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1px; }
+.step-num { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.08em; padding-top: 3px; }
+.step-content h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+.step-content p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+/* FEATURE LIST */
+.feature-list { list-style: none; margin-top: 1.25rem; display: flex; flex-direction: column; gap: 10px; }
+.feature-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+.feature-list li::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 8px; flex-shrink: 0; opacity: 0.7; }
+
+/* MOCKUP PLACEHOLDER */
+.mockup-frame { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin: 1.5rem 0; }
+.mockup-bar { background: var(--surface2); padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); }
+.mockup-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+.mockup-body { padding: 2rem; min-height: 220px; display: flex; align-items: center; justify-content: center; }
+.mockup-placeholder { text-align: center; }
+.mockup-placeholder p { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 8px; }
+
+/* PHONE MOCKUPS */
+.phones-row { display: flex; gap: 1.5rem; margin-top: 1.5rem; align-items: flex-start; }
+.phone { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; flex: 1; min-height: 340px; display: flex; flex-direction: column; }
+.phone-notch { height: 28px; background: var(--surface2); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
+.phone-notch-pill { width: 60px; height: 10px; background: var(--bg); border-radius: 5px; }
+.phone-screen { flex: 1; padding: 1.25rem; display: flex; flex-direction: column; gap: 10px; }
+.phone-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); text-align: center; margin-top: 0.75rem; }
+
+.screen-header { display: flex; align-items: center; justify-content: space-between; }
+.screen-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; }
+.screen-back { font-size: 11px; color: var(--accent); }
+
+.listing-card { background: var(--surface2); border-radius: 10px; padding: 10px 12px; border: 1px solid var(--border); }
+.listing-card h5 { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.listing-card p { font-size: 10px; color: var(--text-secondary); margin: 0; }
+.listing-card .price { font-size: 13px; font-weight: 600; color: var(--accent); }
+
+.trust-bar { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.trust-label { font-size: 10px; color: var(--text-muted); }
+.trust-fill { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.trust-fill-inner { height: 100%; border-radius: 2px; }
+.trust-high { background: #4DE3FF; }
+.trust-med { background: var(--amber); }
+.trust-low { background: #FF6B6B; }
+
+.flag-alert { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); border-left: 2px solid #FF6B6B; border-radius: 8px; padding: 10px 12px; }
+.flag-alert .flag-title { font-size: 11px; font-weight: 600; color: #FF8888; margin-bottom: 3px; }
+.flag-alert p { font-size: 10px; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+
+.checklist-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.checklist-item:last-child { border-bottom: none; }
+.check-circle { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.check-circle.done { background: var(--accent); border-color: var(--accent); }
+.check-circle.done::after { content: '✓'; font-size: 8px; color: var(--bg); font-weight: 700; }
+.check-text { font-size: 11px; color: var(--text-secondary); }
+.check-text.done { color: var(--text-muted); text-decoration: line-through; }
+
+/* REFLECTION */
+.reflection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem; }
+.reflection-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+.reflection-card label { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+.reflection-card p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+
+/* NAV BETWEEN CASES */
+.case-pagination { max-width: 1100px; margin: 0 auto; padding: 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); }
+.pagination-link { display: flex; flex-direction: column; gap: 4px; }
+.pagination-link .direction { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.pagination-link .title { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text-primary); transition: color 0.2s; }
+.pagination-link:hover .title { color: var(--accent); }
+.pagination-link.next { text-align: right; }
+
+footer { border-top: 1px solid var(--border); padding: 2rem 3rem; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+footer p { font-size: 12px; color: var(--text-muted); }
+
+.fade-up { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.fade-up.visible { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  .case-hero { grid-template-columns: 1fr; gap: 2rem; padding: 8rem 1.5rem 3rem; }
+  .case-body { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem 4rem; }
+  .case-nav-sidebar { display: none; }
+  .pain-grid { grid-template-columns: 1fr; }
+  .phones-row { flex-direction: column; }
+  .reflection-grid { grid-template-columns: 1fr; }
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span>Signal</span>&nbsp;Archive</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="index.html#case-files" class="active">Case Files</a></li>
+    <li><a href="background.html">Background</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="case-hero">
+  <div>
+    <div class="case-eyebrow">
+      <span class="case-id">Case 01</span>
+      <span class="case-dot"></span>
+      <span class="case-type">Mobile App · UX Design</span>
+    </div>
+    <h1>MoveWise</h1>
+    <p class="subtitle">Helping students relocate safely — when the cost of a wrong decision is highest.</p>
+  </div>
+  <div class="case-meta-block fade-up">
+    <div class="meta-item">
+      <label>Core challenge</label>
+      <p>Building trust during one of the most stressful life events a young person faces.</p>
+    </div>
+    <div class="meta-item">
+      <label>Platform</label>
+      <p>Mobile — iOS &amp; Android</p>
+    </div>
+    <div class="meta-item">
+      <label>Tags</label>
+      <div class="meta-tags">
+        <span class="tag">Trust Design</span>
+        <span class="tag">User Research</span>
+        <span class="tag">Mobile UX</span>
+        <span class="tag">Student</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- BODY -->
+<div class="case-body">
+
+  <!-- Sidebar nav -->
+  <nav class="case-nav-sidebar" aria-label="Page sections">
+    <ul>
+      <li><a href="#background" class="active">Background</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#goals">Design Goals</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#reflection">Reflection</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <main>
+
+    <div class="content-section fade-up" id="background">
+      <div class="section-label">Background</div>
+      <h2>The problem with moving</h2>
+      <p>Moving to a new city for university is one of the most consequential transitions a young person makes. The stakes are high, financially, emotionally, and practically. But the tools available to students navigating this transition are fragmented, unverified, and often designed for a very different audience.</p>
+      <p>The housing market doesn't slow down for newcomers. Scammers know this. Students who don't know the city, don't know landlord norms, and don't have time to do deep research are the most vulnerable to housing fraud, and the most underserved by existing platforms.</p>
+
+      <div class="pain-grid">
+        <div class="pain-item">
+          <div class="pain-icon">⚠️</div>
+          <h4>Housing scams</h4>
+          <p>Fraudulent listings targeting students unfamiliar with local rental norms and pricing.</p>
+        </div>
+        <div class="pain-item">
+          <div class="pain-icon">🗺️</div>
+          <h4>No local knowledge</h4>
+          <p>Students can't evaluate neighborhoods they've never visited, what's safe, walkable, or student-friendly.</p>
+        </div>
+        <div class="pain-item">
+          <div class="pain-icon">📄</div>
+          <h4>Confusing rental processes</h4>
+          <p>Lease terms, deposits, and tenant rights vary widely and are rarely explained clearly.</p>
+        </div>
+        <div class="pain-item">
+          <div class="pain-icon">🕳️</div>
+          <h4>Unverified advice</h4>
+          <p>Students rely on social media groups for housing tips, unmoderated, unverified and often wrong.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="research">
+      <div class="section-label">Research</div>
+      <h2>What students actually experience</h2>
+      <p>User interviews with students who had recently relocated revealed something important: the anxiety wasn't just about finding housing, it was about <strong>not knowing who to trust</strong>. They described a constant background fear of being deceived, combined with the pressure to make decisions quickly before listings disappeared.</p>
+      <p>Competitive analysis showed a clear gap. Platforms like Blocket and Facebook Marketplace have the listings but no trust signals. University housing lists are verified but extremely limited in supply. Nothing bridged the two.</p>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">R.01</span>
+          <div class="step-content">
+            <h4>User interviews (8 participants)</h4>
+            <p>Students who had relocated in the past 12 months, across 3 Swedish cities. Sessions focused on the emotional arc of the relocation process, not just the logistics.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">R.02</span>
+          <div class="step-content">
+            <h4>Competitive landscape review</h4>
+            <p>Mapped 12 housing platforms against student-specific needs: scam detection, peer reviews, neighborhood data, and checklist support. None covered all four.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">R.03</span>
+          <div class="step-content">
+            <h4>Scam pattern analysis</h4>
+            <p>Reviewed documented student housing scams to identify consistent patterns in fraudulent listings, pricing, language, communication style, and payment requests.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="findings">
+      <div class="section-label">Findings</div>
+      <h2>What the research revealed</h2>
+      <p>Three patterns appeared consistently across interviews:</p>
+
+      <ul class="feature-list">
+        <li>Students wanted to feel confident, not just safe. There's a difference between "this is probably fine" and "I understand why this is trustworthy."</li>
+        <li>Checklists reduced anxiety dramatically, even when students already knew what to do. The act of externalising the process lowered cognitive load.</li>
+        <li>Peer validation mattered more than expert validation. Reviews from former students carried more weight than official ratings or platform badges.</li>
+      </ul>
+
+      <div class="insight">
+        <div class="insight-label">Key insight</div>
+        <p>Trust isn't built with a safety score alone. Students needed to understand <em>why</em> something was flagged, not just that it was. Transparency about reasoning was more reassuring than a confident verdict.</p>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="goals">
+      <div class="section-label">Design Goals</div>
+      <h2>What the solution needed to achieve</h2>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">G.01</span>
+          <div class="step-content">
+            <h4>Reduce cognitive load during a high-stress decision</h4>
+            <p>The experience should feel calm and structured, not like another thing to figure out.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.02</span>
+          <div class="step-content">
+            <h4>Make risk visible without creating panic</h4>
+            <p>Flag concerns clearly, but always with context. The goal is informed confidence, not heightened anxiety.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.03</span>
+          <div class="step-content">
+            <h4>Build trust through transparency, not authority</h4>
+            <p>Explain how conclusions were reached. Students should understand the reasoning, not just receive a verdict.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">G.04</span>
+          <div class="step-content">
+            <h4>Design for users with no local knowledge</h4>
+            <p>Assume the user has never been to the city. Every piece of information should be interpretable without prior context.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="process">
+      <div class="section-label">Process</div>
+      <h2>From sketches to screens</h2>
+      <p>Early sketches explored three interaction models: a search-first approach (like Airbnb), a feed-first approach (like Blocket), and a checklist-first approach that frontloaded the relocation process. User testing in lo-fi Figma prototypes pointed strongly toward the third. Students said starting with the checklist made the whole task feel manageable.</p>
+      <p>Three rounds of iteration focused primarily on the scam detection UI. The first version used a red/amber/green system that users found anxiety-inducing. The second replaced colour with plain-language explanations. The third combined both, colour for quick scanning, language for understanding.</p>
+
+      <div class="mockup-frame">
+        <div class="mockup-bar">
+          <div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div>
+          <span style="font-size:11px; color: var(--text-muted); margin-left: 8px;">Figma — Iteration 3</span>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-placeholder">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="10" fill="var(--surface2)"/>
+              <rect x="10" y="14" width="28" height="3" rx="1.5" fill="var(--text-muted)" opacity="0.4"/>
+              <rect x="10" y="21" width="20" height="3" rx="1.5" fill="var(--text-muted)" opacity="0.25"/>
+              <rect x="10" y="28" width="24" height="3" rx="1.5" fill="var(--text-muted)" opacity="0.25"/>
+            </svg>
+            <p>Wireframes / mockup screens</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="solution">
+      <div class="section-label">Solution</div>
+      <h2>MoveWise - key screens</h2>
+      <p>The final design centres on three core views: the listing trust analysis, the neighborhood comparison, and the relocation checklist. Each is designed to reduce a specific kind of uncertainty that students identified in research.</p>
+
+      <div class="phones-row">
+
+        <!-- Phone 1: Trust analysis -->
+        <div class="phone">
+          <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+          <div class="phone-screen">
+            <div class="screen-header">
+              <span class="screen-back">← Search</span>
+              <span class="screen-title">Listing</span>
+              <span style="font-size:11px; color:var(--text-muted)">Share</span>
+            </div>
+            <div class="listing-card">
+              <h5>2-room apartment, Södermalm</h5>
+              <p>Hornsgatan 42 · Stockholm</p>
+              <p class="price" style="margin-top:4px">6 800 kr / month</p>
+              <div class="trust-bar">
+                <span class="trust-label">Trust</span>
+                <div class="trust-fill"><div class="trust-fill-inner trust-med" style="width:58%"></div></div>
+                <span style="font-size:10px; color:var(--amber)">Medium</span>
+              </div>
+            </div>
+            <div class="flag-alert">
+              <div class="flag-title">⚠ Payment requested before viewing</div>
+              <p>Legitimate landlords rarely ask for payment before you've seen the property in person. This is a common scam pattern.</p>
+            </div>
+            <div class="listing-card" style="background:rgba(77,227,255,0.05); border-color:rgba(77,227,255,0.15)">
+              <h5 style="font-size:11px; color:var(--text-muted)">Positive signals</h5>
+              <p style="font-size:10px; margin-top:2px">✓ Verified landlord profile</p>
+              <p style="font-size:10px">✓ Price within 12% of area median</p>
+              <p style="font-size:10px">✓ 3 reviews from former tenants</p>
+            </div>
+          </div>
+          <p class="phone-label">Trust analysis</p>
+        </div>
+
+        <!-- Phone 2: Checklist -->
+        <div class="phone">
+          <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+          <div class="phone-screen">
+            <div class="screen-header">
+              <span class="screen-title">My Relocation</span>
+              <span style="font-size:10px; color:var(--accent)">4 of 9 done</span>
+            </div>
+            <div style="height:4px; background:var(--border); border-radius:2px; overflow:hidden;">
+              <div style="height:100%; width:44%; background:var(--accent); border-radius:2px;"></div>
+            </div>
+            <div style="margin-top:4px;">
+              <p style="font-size:11px; color:var(--text-muted); font-weight:500; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.06em">Before you move</p>
+              <div class="checklist-item"><div class="check-circle done"></div><span class="check-text done">Confirm lease signing date</span></div>
+              <div class="checklist-item"><div class="check-circle done"></div><span class="check-text done">Document deposit payment</span></div>
+              <div class="checklist-item"><div class="check-circle done"></div><span class="check-text done">Review tenant rights (Sweden)</span></div>
+              <div class="checklist-item"><div class="check-circle"></div><span class="check-text">Schedule property walkthrough</span></div>
+            </div>
+            <div style="margin-top:8px;">
+              <p style="font-size:11px; color:var(--text-muted); font-weight:500; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.06em">First week</p>
+              <div class="checklist-item"><div class="check-circle"></div><span class="check-text">Register new address</span></div>
+              <div class="checklist-item"><div class="check-circle"></div><span class="check-text">Document apartment condition</span></div>
+            </div>
+          </div>
+          <p class="phone-label">Relocation checklist</p>
+        </div>
+
+        <!-- Phone 3: Neighbourhood -->
+        <div class="phone">
+          <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+          <div class="phone-screen">
+            <div class="screen-header">
+              <span class="screen-title">Compare Areas</span>
+              <span style="font-size:11px; color:var(--accent)">Filter</span>
+            </div>
+
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
+              <span style="font-size:10px; padding:3px 8px; border-radius:12px; background:rgba(77,227,255,0.12); color:var(--accent); border:1px solid rgba(77,227,255,0.2)">Transit</span>
+              <span style="font-size:10px; padding:3px 8px; border-radius:12px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border)">Safety</span>
+              <span style="font-size:10px; padding:3px 8px; border-radius:12px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border)">Nightlife</span>
+              <span style="font-size:10px; padding:3px 8px; border-radius:12px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border)">Groceries</span>
+            </div>
+
+            <div class="listing-card" style="border-left: 2px solid var(--accent)">
+              <div style="display:flex; justify-content:space-between; align-items:center">
+                <h5>Södermalm</h5>
+                <span style="font-size:11px; color:var(--accent)">★ 4.6</span>
+              </div>
+              <div class="trust-bar" style="margin-top:6px"><span class="trust-label">Transit</span><div class="trust-fill"><div class="trust-fill-inner trust-high" style="width:90%"></div></div></div>
+              <div class="trust-bar"><span class="trust-label">Safety</span><div class="trust-fill"><div class="trust-fill-inner trust-high" style="width:78%"></div></div></div>
+              <p style="font-size:10px; color:var(--text-muted); margin-top:6px">48 student reviews</p>
+            </div>
+
+            <div class="listing-card">
+              <div style="display:flex; justify-content:space-between; align-items:center">
+                <h5>Vasastan</h5>
+                <span style="font-size:11px; color:var(--text-secondary)">★ 4.2</span>
+              </div>
+              <div class="trust-bar" style="margin-top:6px"><span class="trust-label">Transit</span><div class="trust-fill"><div class="trust-fill-inner trust-high" style="width:70%"></div></div></div>
+              <div class="trust-bar"><span class="trust-label">Safety</span><div class="trust-fill"><div class="trust-fill-inner trust-high" style="width:88%"></div></div></div>
+              <p style="font-size:10px; color:var(--text-muted); margin-top:6px">31 student reviews</p>
+            </div>
+          </div>
+          <p class="phone-label">Neighbourhood comparison</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="content-section fade-up" id="reflection">
+      <div class="section-label">Reflection</div>
+      <h2>What I'd do differently</h2>
+      <p>The main tension in this project was the line between being helpful and being alarming. Flagging potential scams too aggressively made users anxious; flagging too gently risked missing real danger. That balance came from testing, not from design intuition alone.</p>
+
+      <div class="reflection-grid">
+        <div class="reflection-card">
+          <label>What worked</label>
+          <p>Combining transparent reasoning with visual signals. Users didn't just want to know something was risky, they wanted to understand why, in plain language.</p>
+        </div>
+        <div class="reflection-card">
+          <label>What I'd improve</label>
+          <p>Earlier testing with users in active housing searches, not retrospective interviews. The emotional state of someone actively searching is fundamentally different from someone recalling the experience.</p>
+        </div>
+        <div class="reflection-card">
+          <label>Unexpected learning</label>
+          <p>The checklist was the highest-value feature, yet it was almost cut in early scope discussions. Sometimes the most calming intervention is the simplest one.</p>
+        </div>
+        <div class="reflection-card">
+          <label>What this taught me</label>
+          <p>Designing for high-stakes, emotionally charged decisions requires a different kind of restraint. The designer's job is to reduce noise, not add more signals.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- PAGINATION -->
+<div class="case-pagination">
+  <a href="index.html" class="pagination-link">
+    <span class="direction">← Back</span>
+    <span class="title">All Case Files</span>
+  </a>
+  <a href="case-ai-dashboard.html" class="pagination-link next">
+    <span class="direction">Next Case →</span>
+    <span class="title">AI Decision Dashboard</span>
+  </a>
+</div>
+
+<footer>
+  <p>© 2026 Signal Archive</p>
+  <p style="font-size:12px; color:var(--text-muted)">Case 01 of 03</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Sidebar active state on scroll
+  const sections = document.querySelectorAll('.content-section');
+  const navLinks = document.querySelectorAll('.case-nav-sidebar a');
+  const scrollObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.case-nav-sidebar a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => scrollObserver.observe(s));
+</script>
+</body>
+</html>
